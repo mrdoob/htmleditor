@@ -71,8 +71,6 @@
 	<body>
 		<script>
 
-			// https://github.com/mrdoob/code-editor
-
 			window.URL = window.URL || window.webkitURL;
 
 			// deflate
@@ -248,6 +246,16 @@
 
 			}, false );
 			toolbar.appendChild( buttonHide );
+
+			var buttonInfo = document.createElement( 'button' );
+			buttonInfo.className = 'button';
+			buttonInfo.textContent = '?';
+			buttonInfo.addEventListener( 'click', function ( event ) {
+
+				window.open( 'https://github.com/mrdoob/code-editor' );
+
+			}, false );
+			toolbar.appendChild( buttonInfo );
 
 			// events
 
