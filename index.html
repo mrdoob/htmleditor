@@ -284,14 +284,14 @@
 
 			document.addEventListener( 'keydown', function ( event ) {
 
-				if ( event.keyCode === 83 && event.ctrlKey === true ) {
+				if ( event.keyCode === 83 && ( event.ctrlKey === true || event.metaKey === true ) ) {
 
 					event.preventDefault();
 					save();
 
 				}
 
-				if ( event.keyCode === 13 && event.ctrlKey === true ) {
+				if ( event.keyCode === 13 && ( event.ctrlKey === true || event.metaKey === true ) ) {
 
 					update();
 
