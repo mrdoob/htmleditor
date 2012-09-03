@@ -71,6 +71,8 @@
 	<body>
 		<script>
 
+			// https://github.com/mrdoob/code-editor
+
 			window.URL = window.URL || window.webkitURL;
 
 			// deflate
@@ -93,7 +95,7 @@
 				filename: 'Untitled',
 				filetype: 'text/plain',
 				autoupdate: true,
-				code: decode( 'bVRdb5swFH2mv+IuT0xjhlaqViUk0pZl60u1qq007dHBN8ET2Mw2SdMq/322wSi0QQjMPcf33C+Tf/j+a/n0534FpamrxUXevaK8RMrsO8prNBSKkiqNZj5pzebzzcQD2hwqdKtoLdkBXt0qkjtUm0rup1ByxlDMnPXo6Gng52nvO3f7OleF4o0BrYr5pDSm0dM03XJTtmtSyDqtFZNynZpSIZK/OlV0n9ZUG1TpuuUV65GaC4tOFlbK+ztxvbhwceyogoLWqGgCukCBCSgUDBWqWcC3KG3G6pBATa0Ap5VdoS5n3gMX3MQfPZkK7hjuy31uWlEYLgV0FFsOX49ODuYgcA9Ptw+rFblHpRu05B0uPRrDl+sE9lwwuSdcCFS/OTMlpCPbLfJtaRK4tHeWZdBF0QuQRmru5MmL1brOsi6oyGc5Un90lhB0FLIdUZbtGn/2QAxXWZYMj6AaajPad2fL9I1qXtz1aAyvUMhKqilkz5m/XJ4KN8pGPQWjWoQjhGBcmd85jM90ZNjh0yOUsdj3aLCHro7TomJH9UMP9V0cqMSO9yN/wfh9I5IzfRikmCzaGoUhbpgJbRrrb1naoYyH2SJM1qsKHStsO45nZpilMDYK/7WozVdvt4wfrmBx4I0qRpQ0nkOe4dMcMpJdzs6Ahx68elMi0i3icCD6gT2N8+Q85Wl3Zu0Zdv+J/w==' )
+				code: decode( 'bVTRbtsgFH1Ov+IuT57mYbdStSlxIm1ZtvahWtVWmvZIzE1gssEDnDSt8u8DbKJ4jWXJwDncczn34uLdt5+Lp9/3S+C2ruYXRfcZFRwpc99RUaOlUHKqDdrZuLXrj5/HATB2X6EfjVaK7eHVj0Y11RshJ5BPw1RtUa8rtZsAF4yhDKsHvzuL24uslyp8mC5yqUVjwehyNubWNmaSZRthebsipaqzWjOlVpnlGpH8MZmmu6ymxqLOVq2oWI/UQjp0PHdSId5J6PmFz2NLNZS0Rk1TMCVKTEGjZKhRTyO+QeUM0PsUauoEBK3cCA2fhghCCpu8D2QqhWf4mZ+uW1laoSR0FOdO8KOTgxlI3MHTzcNySe5RmwYdeYuLgCbw6TqFnZBM7YiQEvUvwSyHbLB2g2LDbQqX7s3zHLosegHSKCO8PHlxWtd53iU1CqccqD/6lZj0KJ52QLktlaEcmVbyR48ncJXnTjiqRm8G++6cTV+pEeVdjybwCqWqlHbt8ZyHx59T41q7rCdgdYtwgJiMt/lNwORMRWIW4XSEMpaEEh0DxaIOgi2o3FLz0EN9EY9U4pr9Ubxg8rYO6ZkyHKWYKtsapSW+lwltGhdvwV1PJsfWIkzVywo9K247DFvm2EqxazT+bdHYL2HdMb57v5LIGxhGtLKBQ57hwwxykl9Oz4D7Hrz6zyLSDZJ4H/p+Pc3z5DoVWXdl3RX2f41/' )
 			} ];
 
 			if ( localStorage.codeeditor !== undefined ) {
@@ -242,25 +244,7 @@
 			buttonHide.textContent = 'hide code';
 			buttonHide.addEventListener( 'click', function ( event ) {
 
-				if ( codeElement.style.display === '' ) {
-
-					this.textContent = 'show code';
-
-					codeElement.style.display = 'none';
-					buttonUpdate.style.display = 'none';
-					buttonIO.style.display = 'none';
-					buttonShare.display = 'none';
-
-				} else {
-
-					this.textContent = 'hide code';
-
-					codeElement.style.display = '';
-					buttonUpdate.style.display = '';
-					buttonIO.style.display = '';
-					buttonShare.display = '';
-
-				}
+				toggle();
 
 			}, false );
 			toolbar.appendChild( buttonHide );
@@ -291,7 +275,7 @@
 
 			document.addEventListener( 'keydown', function ( event ) {
 
-				if ( event.keyCode === 83  && event.ctrlKey === true ) {
+				if ( event.keyCode === 83 && event.ctrlKey === true ) {
 
 					event.preventDefault();
 					save();
@@ -301,6 +285,12 @@
 				if ( event.keyCode === 13 && event.ctrlKey === true ) {
 
 					update();
+
+				}
+
+				if ( event.keyCode === 27 ) {
+
+					toggle();
 
 				}
 
@@ -338,7 +328,7 @@
 				content.write( code.getValue() );
 				content.close();
 
-			}
+			};
 
 			var save = function () {
 
@@ -357,7 +347,31 @@
 				buttonSave.style.display = 'none';
 				buttonDownload.style.display = '';
 
-			}
+			};
+
+			var toggle = function () {
+
+				if ( codeElement.style.display === '' ) {
+
+					buttonHide.textContent = 'show code';
+
+					codeElement.style.display = 'none';
+					buttonUpdate.style.display = 'none';
+					buttonIO.style.display = 'none';
+					buttonShare.display = 'none';
+
+				} else {
+
+					buttonHide.textContent = 'hide code';
+
+					codeElement.style.display = '';
+					buttonUpdate.style.display = '';
+					buttonIO.style.display = '';
+					buttonShare.display = '';
+
+				}
+
+			};
 
 			code.setValue( documents[ 0 ].code );
 			update();
