@@ -21,8 +21,12 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
   }
   function maybeBackup(stream, pat, style) {
     var cur = stream.current();
-    var close = cur.search(pat);
+    var close = cur.search(pat), m;
     if (close > -1) stream.backUp(cur.length - close);
+    else if (m = cur.match(/<\/?$/)) {
+      stream.backUp(cur[0].length);
+      if (!stream.match(pat, false)) stream.match(cur[0]);
+    }
     return style;
   }
   function javascript(stream, state) {
@@ -72,14 +76,8 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
         return cssMode.indent(state.localState, textAfter);
     },
 
-    compareStates: function(a, b) {
-      if (a.mode != b.mode) return false;
-      if (a.localState) return CodeMirror.Pass;
-      return htmlMode.compareStates(a.htmlState, b.htmlState);
-    },
-
     electricChars: "/{}:"
-  }
+  };
 }, "xml", "javascript", "css");
 
 CodeMirror.defineMIME("text/html", "htmlmixed");
