@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html manifest="editor.appcache">
+	<head>
+		<title>code editor</title>
+		<script src="js/ace/ace.js"></script>
+		<script src="js/rawinflate.js"></script>
+		<script src="js/rawdeflate.js"></script>
+		<style>
+			@font-face {
+				font-family: 'inconsolata';
+				src: url('files/inconsolata.woff') format('woff');
+				font-weight: normal;
+				font-style: normal;
+			}
+
+			html, body {
+				height: 100%;
+			}
+
+			body {
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			.button {
+				font-family: Arial;
+				font-size: 10px;
+				text-transform: uppercase;
+				text-decoration: none;
+
+				color: rgb(150,150,150);
+				border: 1px solid rgb(200,200,200);
+				background-color: transparent;
+
+				margin: 2px;
+				padding: 8px 10px;
+
+				cursor: pointer;
+			}
+
+			.button:hover {
+				border: 1px solid rgb(32,32,32);
+				background-color: rgb(32,32,32);
+			}
+
+			input {
+				cursor: pointer;
+			}
+
+			#preview {
+
+				position: absolute;
+				left: 0px;
+				top: 0px;
+				width: 100%;
+				height: 100%;
+
+			}
+
+			#editor {
+
+				position: absolute;
+				margin: 0;
+				width: 100%;
+				height: 100%;
+				font-family: inconsolata;
+				font-size: 16px;
+				background-color: rgba(255,255,255,0.75);
+
+			}
+
+			#editor .ace_gutter {
+
+				color: rgb(170,170,170);
+				background-color: rgb(247,247,247);
+
+			}
+
+			#editor .ace_selection {
+
+				background: rgba(0,0,255,0.1);
+
+			}
+
+			#toolbar {
+
+				position: absolute;
+				top: 15px;
+				right: 30px;
+
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id="preview"></div>
+		<pre id="editor"></pre>
+		<div id="toolbar"></div>
+		<script>
+
+			window.URL = window.URL || window.webkitURL;
+
+			// deflate
+
+			var decode = function ( string ) {
+
+				return RawDeflate.inflate( window.atob( string ) );
+
+			};
+
+			var encode = function ( string ) {
+
+				return window.btoa( RawDeflate.deflate( string ) );
+
+			};
+
+			//
+
+			var documents = [ {
+				filename: 'Untitled',
+				filetype: 'text/plain',
+				autoupdate: true,
+				code: decode( 'bVRtb9MwEP5cfsXRfclQ52RDFaMvQ9AVhsTEtE1CfHTja2KW2MFx2nVT/ztnJ5lSlqhN7LvHz91zPnv29vLn4v73zRJSm2cXb2b1ZzBLkQv6DmY5Wg5xyk2Jdj6s7PrkfOgdpd1l6EaDlRY7eHajwYrHD4nRlRInsc60mcDR2j9T7865SaSaQFRP9QbNOtPbCaRSCFTeunfkYcs+C5tMZi5KHTg2srBQmng+TK0tJmGYG6H1iiXSptWKxToPbWoQ2Z8yXFUyE800l4pMwwui9xwdOi/E/cMQtto8cC8C1tqQeKNzhFWVUJ51vFgLZInWSYY+WhF6kKzyUJZlhWUoqGwy+yTF/P3443l0FJ+eOXa5hgC2Ugm9ZVIpNL+ksCnM53OI4Bie+3xQcIPKdmzTA9gVyiS1/+Fq4xT2ra4NJyU8R8NHUMaocASEFmjQTFt/giTUmt0Icm7RSJ7RCMt02pJIJW1w7KdcSQdqZu6/rlRspVZQo5qO8K86MKWocAv3V7fLJbtBUxZICza48N4APoxHPfrDHrEjOKVfFFHNpp0ArNCldCmwJ4o1jpo28y+v+SCDO2dp8q8xrf4D2PdYlzxFYbT61vgDOIsiSqCN3lbrYN01Fe4LL2V83XgD2t7mUESPkX+cXoNrQ9lPwJoKO4YfkrhcBSZwBnvo5un25FWsoGf72lVePONCBH4/D8jaLjggXHC14eVt42qL1EIZ3QV38gl7WnnU15rdcELHVe7a1J1nxouCOBcpndHgpR+Z0PkyQ4fqLt2/arSXHuz2msG/dADtZ+8j1FdXzKDFvqojM9p6HHukClwShCm9Jcp3EDHaovG0B7rrg572FJXVg6A9cs1B6FHVuZNmYX3X0d3nbuN/' )
+			} ];
+
+			if ( localStorage.codeeditor !== undefined ) {
+
+				documents = JSON.parse( localStorage.codeeditor );
+
+			}
+
+			if ( window.location.hash ) {
+
+				var hash = window.location.hash.substr( 1 );
+				var version = hash.substr( 0, 2 );
+
+				if ( version == 'A/' ) {
+
+					alert( 'That shared link format is no longer supported.' );
+
+				} else if ( version == 'B/' ) {
+
+					documents[ 0 ].code = decode( hash.substr( 2 ) );
+
+				}
+
+			}
+
+			// preview
+
+			var preview = document.getElementById( 'preview' );
+
+			// editor
+
+			var interval;
+
+			var pre = document.getElementById( 'editor' );
+
+			var editor = ace.edit( pre );
+			editor.setTheme( "ace/theme/chrome" );
+			editor.session.setValue( documents[ 0 ].code );
+			editor.getSession().setMode( "ace/mode/html" );
+			editor.getSession().setUseSoftTabs( false );
+			editor.getSession().setUseWrapMode( true );
+			editor.setFadeFoldWidgets( true );
+			editor.setShowPrintMargin( false );
+			editor.getSession().on( "change", function () {
+
+				buttonSave.style.display = '';
+				buttonDownload.style.display = 'none';
+
+				if ( documents[ 0 ].autoupdate === false ) return;
+
+				clearTimeout( interval );
+				interval = setTimeout( update, 300 );
+
+			} );
+
+			// toolbar
+
+			var pad = function ( number, length ) {
+
+				var string = number.toString();
+
+				while ( string.length < length ) string = '0' + string;
+				return string;
+
+			}
+
+			var toolbar = document.getElementById( 'toolbar' );
+
+			var buttonUpdate = document.createElement( 'button' );
+			buttonUpdate.className = 'button';
+
+			var checkbox = document.createElement( 'input' );
+			checkbox.type = 'checkbox';
+
+			if ( documents[ 0 ].autoupdate === true ) checkbox.checked = true;
+
+			checkbox.style.margin = '-4px 4px -4px 0px';
+			checkbox.addEventListener( 'click', function ( event ) {
+
+				event.stopPropagation();
+
+				documents[ 0 ].autoupdate = documents[ 0 ].autoupdate === false;
+
+				localStorage.codeeditor = JSON.stringify( documents );
+
+			}, false );
+			buttonUpdate.appendChild( checkbox );
+			buttonUpdate.appendChild( document.createTextNode( 'update' ) );
+
+			buttonUpdate.addEventListener( 'click', function ( event ) {
+
+				update();
+
+			}, false );
+			toolbar.appendChild( buttonUpdate );
+
+			var buttonIO = document.createElement( 'span' );
+			toolbar.appendChild( buttonIO );
+
+			var buttonSave = document.createElement( 'button' );
+			buttonSave.className = 'button';
+			buttonSave.textContent = 'save';
+			buttonSave.addEventListener( 'click', function ( event ) {
+
+				save();
+
+			}, false );
+			buttonIO.appendChild( buttonSave );
+
+			var buttonDownload = document.createElement( 'a' );
+			buttonDownload.className = 'button';
+			buttonDownload.style.display = 'none';
+			buttonDownload.download = 'index.html';
+			buttonDownload.textContent = 'download';
+			buttonIO.appendChild( buttonDownload );
+
+			var buttonShare = document.createElement( 'button' );
+			buttonShare.className = 'button';
+			buttonShare.textContent = 'share';
+			buttonShare.addEventListener( 'click', function ( event ) {
+
+				window.location.replace( '#B/' + encode( editor.getValue() ) );
+
+			}, false );
+			buttonIO.appendChild( buttonShare );
+
+			var buttonHide = document.createElement( 'button' );
+			buttonHide.className = 'button';
+			buttonHide.textContent = 'hide code';
+			buttonHide.addEventListener( 'click', function ( event ) {
+
+				toggle();
+
+			}, false );
+			toolbar.appendChild( buttonHide );
+
+			var buttonInfo = document.createElement( 'button' );
+			buttonInfo.className = 'button';
+			buttonInfo.textContent = '?';
+			buttonInfo.addEventListener( 'click', function ( event ) {
+
+				window.open( 'https://github.com/mrdoob/code-editor' );
+
+			}, false );
+			toolbar.appendChild( buttonInfo );
+
+			// events
+
+			document.addEventListener( 'drop', function ( event ) {
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				var file = event.dataTransfer.files[ 0 ];
+
+				documents[ 0 ].filename = file.name;
+				documents[ 0 ].filetype = file.type;
+
+				var reader = new FileReader();
+
+				reader.onload = function ( event ) {
+
+					editor.setValue( event.target.result );
+
+				};
+
+				reader.readAsText( file );
+
+			}, false );
+
+			document.addEventListener( 'keydown', function ( event ) {
+
+				if ( event.keyCode === 83 && ( event.ctrlKey === true || event.metaKey === true ) ) {
+
+					event.preventDefault();
+					save();
+
+				}
+
+				if ( event.keyCode === 13 && ( event.ctrlKey === true || event.metaKey === true ) ) {
+
+					update();
+
+				}
+
+				if ( event.keyCode === 27 ) {
+
+					toggle();
+
+				}
+
+			}, false );
+
+			// actions
+
+			var update = function () {
+
+				while ( preview.children.length > 0 ) {
+
+					preview.removeChild( preview.firstChild );
+
+				}
+
+				var iframe = document.createElement( 'iframe' );
+				iframe.style.width = '100%';
+				iframe.style.height = '100%';
+				iframe.style.border = '0';
+				preview.appendChild( iframe );
+
+				var content = iframe.contentDocument || iframe.contentWindow.document;
+
+				content.open();
+				content.write( editor.getValue() );
+				content.close();
+
+			};
+
+			var save = function () {
+
+				documents[ 0 ].code = editor.getValue();
+
+				localStorage.codeeditor = JSON.stringify( documents );
+
+				var blob = new Blob( [ editor.getValue() ], { type: documents[ 0 ].filetype } );
+				var objectURL = URL.createObjectURL( blob );
+
+				buttonDownload.href = objectURL;
+
+				var date = new Date();
+				buttonDownload.download = documents[ 0 ].filename;
+
+				buttonSave.style.display = 'none';
+				buttonDownload.style.display = '';
+
+			};
+
+			var toggle = function () {
+
+				if ( pre.style.display === '' ) {
+
+					buttonHide.textContent = 'show code';
+
+					pre.style.display = 'none';
+					buttonUpdate.style.display = 'none';
+					buttonIO.style.display = 'none';
+					buttonShare.display = 'none';
+
+				} else {
+
+					buttonHide.textContent = 'hide code';
+
+					pre.style.display = '';
+					buttonUpdate.style.display = '';
+					buttonIO.style.display = '';
+					buttonShare.display = '';
+
+				}
+
+			};
+
+			update();
+
+		</script>
+	</body>
+</html>
