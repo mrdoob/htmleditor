@@ -18,6 +18,10 @@
 				font-style: normal;
 			}
 
+			html, body {
+				height: 100%;
+			}
+
 			body {
 				margin: 0px;
 				overflow: hidden;
@@ -48,27 +52,60 @@
 				cursor: pointer;
 			}
 
-			/**/
+			#preview {
 
-			.CodeMirror {
-				font-family: inconsolata;
-				background-color: rgba(255,255,255,0.75);
-			}
-
-			.CodeMirror-scroll {
+				position: absolute;
+				left: 0px;
+				top: 0px;
+				width: 100%;
 				height: 100%;
+
 			}
 
-			div.CodeMirror-selected {
-				background: rgba(0,0,0,0.1);
+			#editor {
+
+				position: absolute;
+				margin: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(255,255,255,0.75);
+
 			}
-			.CodeMirror-focused div.CodeMirror-selected {
+
+			#editor .CodeMirror {
+
+				font-family: inconsolata;
+				font-size: 16px;
+				height: 100% !important;
+
+			}
+
+			#editor .CodeMirror-scroll {
+
+				height: 100%;
+
+			}
+
+			#editor .CodeMirror-focused div.CodeMirror-selected {
+
 				background: rgba(0,0,255,0.1);
+
+			}
+
+			#toolbar {
+
+				position: absolute;
+				top: 15px;
+				right: 30px;
+
 			}
 
 		</style>
 	</head>
 	<body>
+		<div id="preview"></div>
+		<div id="editor"></div>
+		<div id="toolbar"></div>
 		<script>
 
 			window.URL = window.URL || window.webkitURL;
@@ -121,19 +158,13 @@
 
 			// preview
 
-			var preview = document.createElement( 'div' );
-			preview.style.position = 'absolute';
-			preview.style.left = '0px';
-			preview.style.top = '0px';
-			preview.style.width = window.innerWidth + 'px';
-			preview.style.height = window.innerHeight + 'px';
-			document.body.appendChild( preview );
+			var preview = document.getElementById( 'preview' );
 
 			// editor
 
 			var interval;
 
-			var code = CodeMirror( document.body, {
+			var editor = CodeMirror( document.getElementById( 'editor' ), {
 
 				value: documents[ 0 ].code,
 				mode: "text/html",
@@ -157,11 +188,7 @@
 
 			} );
 
-			var codeElement = code.getWrapperElement();
-			codeElement.style.position = 'absolute';
-			codeElement.style.width = window.innerWidth + 'px';
-			codeElement.style.height = window.innerHeight + 'px';
-			document.body.appendChild( codeElement );
+			var element = editor.getWrapperElement();
 
 			// toolbar
 
@@ -174,11 +201,7 @@
 
 			}
 
-			var toolbar = document.createElement( 'div' );
-			toolbar.style.position = 'absolute';
-			toolbar.style.right = '15px';
-			toolbar.style.top = '15px';
-			document.body.appendChild( toolbar );
+			var toolbar = document.getElementById( 'toolbar' );
 
 			var buttonUpdate = document.createElement( 'button' );
 			buttonUpdate.className = 'button';
@@ -233,7 +256,7 @@
 			buttonShare.textContent = 'share';
 			buttonShare.addEventListener( 'click', function ( event ) {
 
-				window.location.replace( '#B/' + encode( code.getValue() ) );
+				window.location.replace( '#B/' + encode( editor.getValue() ) );
 
 			}, false );
 			buttonIO.appendChild( buttonShare );
@@ -274,7 +297,7 @@
 
 				reader.onload = function ( event ) {
 
-					code.setValue( event.target.result );
+					editor.setValue( event.target.result );
 
 				};
 
@@ -305,16 +328,6 @@
 
 			}, false );
 
-			window.addEventListener( 'resize', function ( event ) {
-
-				codeElement.style.width = window.innerWidth + 'px';
-				codeElement.style.height = window.innerHeight + 'px';
-
-				preview.style.width = window.innerWidth + 'px';
-				preview.style.height = window.innerHeight + 'px';
-
-			} );
-
 			// actions
 
 			var update = function () {
@@ -334,18 +347,18 @@
 				var content = iframe.contentDocument || iframe.contentWindow.document;
 
 				content.open();
-				content.write( code.getValue() );
+				content.write( editor.getValue() );
 				content.close();
 
 			};
 
 			var save = function () {
 
-				documents[ 0 ].code = code.getValue();
+				documents[ 0 ].code = editor.getValue();
 
 				localStorage.codeeditor = JSON.stringify( documents );
 
-				var blob = new Blob( [ code.getValue() ], { type: documents[ 0 ].filetype } );
+				var blob = new Blob( [ editor.getValue() ], { type: documents[ 0 ].filetype } );
 				var objectURL = URL.createObjectURL( blob );
 
 				buttonDownload.href = objectURL;
@@ -360,11 +373,11 @@
 
 			var toggle = function () {
 
-				if ( codeElement.style.display === '' ) {
+				if ( element.style.display === '' ) {
 
 					buttonHide.textContent = 'show code';
 
-					codeElement.style.display = 'none';
+					element.style.display = 'none';
 					buttonUpdate.style.display = 'none';
 					buttonIO.style.display = 'none';
 					buttonShare.display = 'none';
@@ -373,7 +386,7 @@
 
 					buttonHide.textContent = 'hide code';
 
-					codeElement.style.display = '';
+					element.style.display = '';
 					buttonUpdate.style.display = '';
 					buttonIO.style.display = '';
 					buttonShare.display = '';

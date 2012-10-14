@@ -154,9 +154,9 @@
 
 			var interval;
 
-			var pre = document.getElementById( 'editor' );
+			var element = document.getElementById( 'editor' );
 
-			var editor = ace.edit( pre );
+			var editor = ace.edit( element );
 			editor.setTheme( "ace/theme/chrome" );
 			editor.session.setValue( documents[ 0 ].code );
 			editor.getSession().setMode( "ace/mode/html" );
@@ -359,11 +359,11 @@
 
 			var toggle = function () {
 
-				if ( pre.style.display === '' ) {
+				if ( element.style.display === '' ) {
 
 					buttonHide.textContent = 'show code';
 
-					pre.style.display = 'none';
+					element.style.display = 'none';
 					buttonUpdate.style.display = 'none';
 					buttonIO.style.display = 'none';
 					buttonShare.display = 'none';
@@ -372,7 +372,7 @@
 
 					buttonHide.textContent = 'hide code';
 
-					pre.style.display = '';
+					element.style.display = '';
 					buttonUpdate.style.display = '';
 					buttonIO.style.display = '';
 					buttonShare.display = '';
