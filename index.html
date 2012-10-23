@@ -33,9 +33,9 @@
 				text-transform: uppercase;
 				text-decoration: none;
 
-				color: rgba(0,0,0,0.5);
-				border: 1px solid rgba(0,0,0,0.25);
-				background-color: rgba(0,0,0,0);
+				color: rgb(80,80,80);
+				border: transparent;
+				background-color: rgb(235,235,235);
 
 				margin: 2px;
 				padding: 8px 10px;
@@ -44,8 +44,16 @@
 			}
 
 			.button:hover {
-				color: rgba(255,255,255,0.75);
-				background-color: rgba(0,0,0,0.75);
+				color: rgb(235,235,235);
+				background-color: rgb(80,80,80);
+			}
+
+			.button path {
+				stroke: rgb(80,80,80);
+			}
+
+			.button:hover path {
+				stroke: rgb(235,235,235);
 			}
 
 			input {
@@ -96,6 +104,7 @@
 				position: absolute;
 				top: 15px;
 				right: 30px;
+				text-align: right;
 
 			}
 
@@ -230,36 +239,6 @@
 			}, false );
 			toolbar.appendChild( buttonUpdate );
 
-			var buttonIO = document.createElement( 'span' );
-			toolbar.appendChild( buttonIO );
-
-			var buttonSave = document.createElement( 'button' );
-			buttonSave.className = 'button';
-			buttonSave.textContent = 'save';
-			buttonSave.addEventListener( 'click', function ( event ) {
-
-				save();
-
-			}, false );
-			buttonIO.appendChild( buttonSave );
-
-			var buttonDownload = document.createElement( 'a' );
-			buttonDownload.className = 'button';
-			buttonDownload.style.display = 'none';
-			buttonDownload.download = 'index.html';
-			buttonDownload.textContent = 'download';
-			buttonIO.appendChild( buttonDownload );
-
-			var buttonShare = document.createElement( 'button' );
-			buttonShare.className = 'button';
-			buttonShare.textContent = 'share';
-			buttonShare.addEventListener( 'click', function ( event ) {
-
-				window.location.replace( '#B/' + encode( editor.getValue() ) );
-
-			}, false );
-			buttonIO.appendChild( buttonShare );
-
 			var buttonHide = document.createElement( 'button' );
 			buttonHide.className = 'button';
 			buttonHide.textContent = 'hide code';
@@ -270,15 +249,58 @@
 			}, false );
 			toolbar.appendChild( buttonHide );
 
-			var buttonInfo = document.createElement( 'button' );
-			buttonInfo.className = 'button';
-			buttonInfo.textContent = '?';
-			buttonInfo.addEventListener( 'click', function ( event ) {
+			var buttonMenu = document.createElement( 'button' );
+			buttonMenu.className = 'button';
+			buttonMenu.innerHTML = '<svg width="8" height="8"><path d="M 0,1.5 8,1.5 M 0,4.5 8,4.5 M 0,7.5 8,7.5"></svg>';
+			buttonMenu.addEventListener( 'click', function ( event ) {
+
+				menu.style.display = menu.style.display === '' ? 'none' : '';
+
+			}, false );
+			toolbar.appendChild( buttonMenu );
+
+			toolbar.appendChild( document.createElement( 'br' ) );
+
+			var menu = document.createElement( 'span' );
+			menu.style.display = 'none';
+			toolbar.appendChild( menu );
+
+			var buttonSave = document.createElement( 'button' );
+			buttonSave.className = 'button';
+			buttonSave.textContent = 'save';
+			buttonSave.addEventListener( 'click', function ( event ) {
+
+				save();
+
+			}, false );
+			menu.appendChild( buttonSave );
+
+			var buttonDownload = document.createElement( 'a' );
+			buttonDownload.className = 'button';
+			buttonDownload.style.display = 'none';
+			buttonDownload.download = 'index.html';
+			buttonDownload.textContent = 'download';
+			menu.appendChild( buttonDownload );
+
+			var buttonShare = document.createElement( 'button' );
+			buttonShare.className = 'button';
+			buttonShare.textContent = 'share';
+			buttonShare.addEventListener( 'click', function ( event ) {
+
+				window.location.replace( '#B/' + encode( editor.getValue() ) );
+
+			}, false );
+			menu.appendChild( buttonShare );
+
+			var buttonAbout = document.createElement( 'button' );
+			buttonAbout.className = 'button';
+			buttonAbout.textContent = 'about';
+			buttonAbout.addEventListener( 'click', function ( event ) {
 
 				window.open( 'https://github.com/mrdoob/code-editor' );
 
 			}, false );
-			toolbar.appendChild( buttonInfo );
+			menu.appendChild( buttonAbout );
 
 			// events
 
@@ -378,7 +400,6 @@
 
 					element.style.display = 'none';
 					buttonUpdate.style.display = 'none';
-					buttonIO.style.display = 'none';
 					buttonShare.display = 'none';
 
 				} else {
@@ -387,7 +408,6 @@
 
 					element.style.display = '';
 					buttonUpdate.style.display = '';
-					buttonIO.style.display = '';
 					buttonShare.display = '';
 
 				}
