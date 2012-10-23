@@ -134,12 +134,9 @@
 
 			//
 
-			var documents = [ {
-				filename: 'Untitled',
-				filetype: 'text/plain',
-				autoupdate: true,
-				code: decode( 'bVRtT9swEP5cfsWtfAlTcQJTNdYXpq2UMWloCJCmfXTja+KR2JnjtBTU/76zk1QtS1TV9t3je+7Vk3dXP2ePv+/mkNo8uzya1EtvkiIXtPYmOVoOccpNiXbar+zy9KLvFaXdZOh2vYUWG3h1u96Cx0+J0ZUSp7HOtBnB8dJ/Y6/OuUmkGkFUH/UKzTLT6xGkUghUXrp1xsPW+iRsPJk4lpo4NrKwUJp42k+tLUZhmBuh9YIl0qbVgsU6D21qENmfMlxUMhPNMZeKRP1LMu9t7Jm7PHLcYQhrbZ64jwCW2lDkRucIiyohJ2uyWAtkidZJhp6qCD1IVnkoy7LCMhSUM5l9lmL6YfjpIjqOz86ddbmEANZSCb1mUik0v6SwKUynU4jgBF67dFBwg8ruycYHsBuUSWrf4GrhGLY+y/S5dcUpGp6j4QMoY1Q4ALoh0KAZt/oEKVhrNgPIuUUjeUY7LNOxz45U0gYnHsyVdAh3csdlpWIrtYIa0jSD/6spyUGFa3i8uZ/P2R2askC6sMKZ1wbwcTjoiD7sCHUAZ/SLIsrYeI+AFbqUzgX2QlzDKKod6/lID9gfnKR1vNdGfAD5HuuSpyiMVt8afQDnUUTELWubn4N7t5Sqr7yU8W2jDaiozRxEz5H/XJwGl4a8HoE1Fe4Jfkiy5SIfwTlsofXRVeA/nqCjWK1zPmjGhQh89XaG2nofGJtxteLlfaNq6ruDMhr7B/mCHY076GrElkrouMpdQ7qxZbwoyN4spVEMdl3HhM7nGTpUe2172E27LqOGarz6S/Nlv3g5Ia5d1oIWd5AwZrT1GPZM4V6Rmim9JlPvIWJUh+G4A7rpgp69yR6rN0E7RU2H74ew98BMwvrhoofMPa3/AA==' )
-			} ];
+			var defaultCode = decode( 'bVRtT9swEP5cfsWtfAlTcQJTNdYXpq2UMWloCJCmfXTja+KR2JnjtBTU/76zk1QtS1TV9t3je+7Vk3dXP2ePv+/mkNo8uzya1EtvkiIXtPYmOVoOccpNiXbar+zy9KLvFaXdZOh2vYUWG3h1u96Cx0+J0ZUSp7HOtBnB8dJ/Y6/OuUmkGkFUH/UKzTLT6xGkUghUXrp1xsPW+iRsPJk4lpo4NrKwUJp42k+tLUZhmBuh9YIl0qbVgsU6D21qENmfMlxUMhPNMZeKRP1LMu9t7Jm7PHLcYQhrbZ64jwCW2lDkRucIiyohJ2uyWAtkidZJhp6qCD1IVnkoy7LCMhSUM5l9lmL6YfjpIjqOz86ddbmEANZSCb1mUik0v6SwKUynU4jgBF67dFBwg8ruycYHsBuUSWrf4GrhGLY+y/S5dcUpGp6j4QMoY1Q4ALoh0KAZt/oEKVhrNgPIuUUjeUY7LNOxz45U0gYnHsyVdAh3csdlpWIrtYIa0jSD/6spyUGFa3i8uZ/P2R2askC6sMKZ1wbwcTjoiD7sCHUAZ/SLIsrYeI+AFbqUzgX2QlzDKKod6/lID9gfnKR1vNdGfAD5HuuSpyiMVt8afQDnUUTELWubn4N7t5Sqr7yU8W2jDaiozRxEz5H/XJwGl4a8HoE1Fe4Jfkiy5SIfwTlsofXRVeA/nqCjWK1zPmjGhQh89XaG2nofGJtxteLlfaNq6ruDMhr7B/mCHY076GrElkrouMpdQ7qxZbwoyN4spVEMdl3HhM7nGTpUe2172E27LqOGarz6S/Nlv3g5Ia5d1oIWd5AwZrT1GPZM4V6Rmim9JlPvIWJUh+G4A7rpgp69yR6rN0E7RU2H74ew98BMwvrhoofMPa3/AA==' );
+
+			var documents = [ { filename: 'Untitled', filetype: 'text/plain', autoupdate: true, code: defaultCode } ];
 
 			if ( localStorage.codeeditor !== undefined ) {
 
@@ -291,6 +288,21 @@
 
 			}, false );
 			menu.appendChild( buttonShare );
+
+			var buttonReset = document.createElement( 'button' );
+			buttonReset.className = 'button';
+			buttonReset.textContent = 'reset';
+			buttonReset.addEventListener( 'click', function ( event ) {
+
+				if ( confirm( 'Are you sure?' ) === true ) {
+
+					editor.setValue( defaultCode );
+					save();
+
+				}
+
+			}, false );
+			menu.appendChild( buttonReset );
 
 			var buttonAbout = document.createElement( 'button' );
 			buttonAbout.className = 'button';
