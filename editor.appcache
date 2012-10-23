@@ -1,13 +1,13 @@
 CACHE MANIFEST
-# 2012-10-24
+# 2012-10-23:2
 
 CACHE:
 /favicon.ico
 index.html
 files/inconsolata.woff
+js/esprima.js
 js/rawdeflate.js
 js/rawinflate.js
-js/esprima.js
 js/codemirror/codemirror.css
 js/codemirror/codemirror.js
 js/codemirror/mode/css.js
