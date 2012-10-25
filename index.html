@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html manifest="editor.appcache">
 	<head>
-		<title>code editor</title>
+		<title>html editor</title>
 		<link rel="stylesheet" href="js/codemirror/codemirror.css">
 		<script src="js/codemirror/codemirror.js"></script>
 		<script src="js/codemirror/mode/xml.js"></script>
@@ -312,7 +312,7 @@
 			buttonShare.addEventListener( 'click', function ( event ) {
 
 				var dom = document.createElement( 'input' );
-				dom.value = 'http://mrdoob.com/projects/code-editor/#B/' + encode( editor.getValue() );
+				dom.value = 'http://mrdoob.com/projects/htmleditor/#B/' + encode( editor.getValue() );
 				dom.style.width = '400px';
 				dom.style.padding = '5px';
 				dom.style.border = '0px';
