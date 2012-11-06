@@ -36,6 +36,19 @@
 
 			}
 
+			a {
+
+				color: #ffffff;
+
+			}
+
+			h1 {
+
+				font-size: 20px;
+				margin-top: 0px;
+
+			}
+
 			.button {
 
 				font-size: 10px;
@@ -138,7 +151,7 @@
 
 				position: absolute;
 				color: rgb(235,235,235);
-				padding: 40px 20px 20px 20px;
+				padding: 20px 20px 20px 20px;
 				background-color: rgb(80,80,80);
 
 			}
@@ -315,6 +328,7 @@
 				dom.value = 'http://mrdoob.com/projects/htmleditor/#B/' + encode( editor.getValue() );
 				dom.style.width = '400px';
 				dom.style.padding = '5px';
+				dom.style.marginTop = '20px';
 				dom.style.border = '0px';
 
 				popup.set( dom );
@@ -346,7 +360,15 @@
 			buttonAbout.textContent = 'about';
 			buttonAbout.addEventListener( 'click', function ( event ) {
 
-				window.open( 'https://github.com/mrdoob/code-editor' );
+				var dom = document.createElement( 'div' );
+				dom.style.width = '400px';
+				dom.style.padding = '5px';
+				dom.style.border = '0px';
+				dom.style.textAlign = 'center';
+				dom.innerHTML = '<h1>HTML EDITOR<\/h1><a href="https://github.com/mrdoob/htmleditor" target="_blank">Source code</a>.<br>Powered by <a href="http://codemirror.net/" target="_blank">CodeMirror</a> and <a href="http://esprima.org/" target="_blank">Esprima</a>.';
+
+				popup.set( dom );
+				popup.show();
 
 			}, false );
 			menu.appendChild( buttonAbout );
@@ -388,7 +410,6 @@
 				element.appendChild( buttonClose );
 
 				var content = document.createElement( 'div' );
-				content.style.top = '40px';
 				element.appendChild( content );
 
 				var update = function () {
