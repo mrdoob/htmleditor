@@ -365,8 +365,7 @@
 				dom.style.padding = '5px';
 				dom.style.border = '0px';
 				dom.style.textAlign = 'center';
-				dom.innerHTML = '<h1>HTML EDITOR<\/h1><a href="https://github.com/mrdoob/htmleditor" target="_blank">Source code</a>.<br>Powered by <a href="http://codemirror.net/" target="_blank">CodeMirror</a> and <a href="http://esprima.org/" target="_blank">Esprima</a>.';
-
+				dom.innerHTML = '<h1>HTML EDITOR<\/h1><a href="https://github.com/mrdoob/htmleditor" target="_blank">Source code</a>.<br>Powered by <a href="http://codemirror.net/" target="_blank">CodeMirror ' + CodeMirror.version + '</a> and <a href="http://esprima.org/" target="_blank">Esprima ' + esprima.version + '</a>.';
 				popup.set( dom );
 				popup.show();
 
