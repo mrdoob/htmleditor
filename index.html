@@ -183,7 +183,7 @@
 
 			//
 
-			var defaultCode = decode( 'bVRtT9swEP5cfsWtfAlTcQJTNdYXpq2UMWloCJCmfXTja+KR2JnjtBTU/76zk1QtS1TV9t3je+7Vk3dXP2ePv+/mkNo8uzya1EtvkiIXtPYmOVoOccpNiXbar+zy9KLvFaXdZOh2vYUWG3h1u96Cx0+J0ZUSp7HOtBnB8dJ/Y6/OuUmkGkFUH/UKzTLT6xGkUghUXrp1xsPW+iRsPJk4lpo4NrKwUJp42k+tLUZhmBuh9YIl0qbVgsU6D21qENmfMlxUMhPNMZeKRP1LMu9t7Jm7PHLcYQhrbZ64jwCW2lDkRucIiyohJ2uyWAtkidZJhp6qCD1IVnkoy7LCMhSUM5l9lmL6YfjpIjqOz86ddbmEANZSCb1mUik0v6SwKUynU4jgBF67dFBwg8ruycYHsBuUSWrf4GrhGLY+y/S5dcUpGp6j4QMoY1Q4ALoh0KAZt/oEKVhrNgPIuUUjeUY7LNOxz45U0gYnHsyVdAh3csdlpWIrtYIa0jSD/6spyUGFa3i8uZ/P2R2askC6sMKZ1wbwcTjoiD7sCHUAZ/SLIsrYeI+AFbqUzgX2QlzDKKod6/lID9gfnKR1vNdGfAD5HuuSpyiMVt8afQDnUUTELWubn4N7t5Sqr7yU8W2jDaiozRxEz5H/XJwGl4a8HoE1Fe4Jfkiy5SIfwTlsofXRVeA/nqCjWK1zPmjGhQh89XaG2nofGJtxteLlfaNq6ruDMhr7B/mCHY076GrElkrouMpdQ7qxZbwoyN4spVEMdl3HhM7nGTpUe2172E27LqOGarz6S/Nlv3g5Ia5d1oIWd5AwZrT1GPZM4V6Rmim9JlPvIWJUh+G4A7rpgp69yR6rN0E7RU2H74ew98BMwvrhoofMPa3/AA==' );
+			var defaultCode = decode( 'dVRtT9swEP5cfsWtfAlTcQJTNda0TBvrYBJoCJDQPrrxNfFI7M5xKAXx33d2kq7ZsihSnHt5nnvOZ0/ffPl+dvfjeg6ZLfLTvWn9GUwz5IK+g2mBlkOScVOinQ0ruzw8GXpHaTc5utVgocUGXtxqsODJQ2p0pcRhonNtJrC/9E/s3QU3qVQTiOpf/Yhmmev1BDIpBCpvfXXgYYs+DZtKpo6lJk6MXFkoTTIbZtauJmFYGKH1gqXSZtWCJboIbWYQ2c8yXFQyF81vIRWZhqcE7zF24E73HHcYwlqbB+4VwFIbUm50gbCoUiqyJku0QJZqneboqVahD5JVEcqyrLAMBfVM5h+lmL0bfziJ9pOjY4culxDAWiqh10wqheZeCpvBbDaDCA7gpc8HK25Q2R1b3Am7QJlm9q+42hjDqxf1yEkGL9DwEZQJKhwBhQo0aOLWnyKptGYzgoJbNJLntMIyi7cIUklHs6xUYqVWEFDB3jlowcircA13FzfzObvHxfnlTeMJDuJOJKNZupXP2NONUZ+6Jl3opCqcSDcKjK9WBHeW0fYGW0FM6GKeo4tyWT6t1t6p7hpNuUIS8ohn3hvA+/Gop/9hTzkjOKI3iqK2rpqArXQpXWvYM3GNo6ih9y3vsN86S9CW17a+E/It0SXPUBitzht/AMdRRMQta7tRnbwr2rPPvJTJVeMNaKyakxg9Rf5xOg0uDVU9AWsq3DFcSsJyyidwDK/bFrpR+Icn6JmatjgvmnFBW+NzG6A/A8mVdDn/m6hfdIzsJx9Drq+utGCbs1sVM9r6GPZEWF/IzZReE9RbiBiJHcc9oZu+0KO4O86sXgTtmWnGqKPEHYpmuJvimm3duWGmYX1z0U3m7tbf' );
 
 			var documents = [ { filename: 'Untitled', filetype: 'text/plain', autoupdate: true, code: defaultCode } ];
 
@@ -221,24 +221,24 @@
 			var editor = CodeMirror( document.getElementById( 'editor' ), {
 
 				value: documents[ 0 ].code,
-				mode: "text/html",
+				mode: 'text/html',
 				lineNumbers: true,
 				matchBrackets: true,
 				indentWithTabs: true,
 				tabSize: 4,
-				indentUnit: 4,
+				indentUnit: 4
 
-				onChange: function () {
+			} );
 
-					buttonSave.style.display = '';
-					buttonDownload.style.display = 'none';
+			editor.on( 'change', function() {
 
-					if ( documents[ 0 ].autoupdate === false ) return;
+				buttonSave.style.display = '';
+				buttonDownload.style.display = 'none';
 
-					clearTimeout( interval );
-					interval = setTimeout( update, 500 );
+				if ( documents[ 0 ].autoupdate === false ) return;
 
-				}
+				clearTimeout( interval );
+				interval = setTimeout( update, 500 );
 
 			} );
 
@@ -537,17 +537,18 @@
 
 				while ( errorLines.length > 0 ) {
 
-					editor.setLineClass( errorLines.shift(), null, null );
+					editor.removeLineClass( errorLines.shift(), 'background', 'errorLine' );
 
 				}
 
-				var string = '';
+				var string = '\n';
 
 				var lines = value.split( '\n' );
 				var lineCurrent = 0, lineTotal = lines.length;
 
 				while ( lineCurrent < lineTotal && lines[ lineCurrent ].indexOf( '<script>' ) === -1 ) {
 
+					string += '\n';
 					lineCurrent ++;
 
 				}
@@ -572,28 +573,27 @@
 					for ( var i = 0; i < result.length; i ++ ) {
 
 						var error = result[ i ];
+						var lineNumber = error.lineNumber - 1;
 
-						var lineNumber = error.lineNumber + lineStart;
 						errorLines.push( lineNumber );
 
-						editor.setLineClass( lineNumber, null, 'errorLine' );
+						editor.addLineClass( lineNumber, 'background', 'errorLine' );
 
-						console.log( 'Line ' + ( lineNumber + 1 ) + ': ' + error.string );
+						console.log( error.toString() );
 
 					}
 
 				} catch ( error ) {
 
-					var lineNumber = error.lineNumber + lineStart;
+					var lineNumber = error.lineNumber - 1;
+
 					errorLines.push( lineNumber );
 
-					editor.setLineClass( lineNumber, null, 'errorLine' );
+					editor.addLineClass( lineNumber, 'background', 'errorLine' );
 
-					console.log( 'Line ' + ( lineNumber + 1 ) + ': ' + error.string );
+					console.log( error.toString() );
 
 				}
-
-				// console.log( errors );
 
 				return errorLines.length === 0;
 
