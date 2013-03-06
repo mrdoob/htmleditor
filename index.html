@@ -138,6 +138,14 @@
 
 			}
 
+			#editor .CodeMirror .esprima-error {
+
+				color: #f00;
+				text-align: right;
+				padding: 0px 20px;
+
+			}
+
 			#toolbar {
 
 				position: absolute;
@@ -505,15 +513,19 @@
 
 			var update = function () {
 
-				while ( preview.children.length > 0 ) {
-
-					preview.removeChild( preview.firstChild );
-
-				}
-
 				var value = editor.getValue();
 
 				if ( validate( value ) ) {
+
+					// remove previous iframe
+
+					if ( preview.children.length > 0 ) {
+
+						preview.removeChild( preview.firstChild );
+
+					}
+
+					//
 
 					var iframe = document.createElement( 'iframe' );
 					iframe.style.width = '100%';
@@ -532,70 +544,99 @@
 			};
 
 			var errorLines = [];
+			var widgets = [];
 
 			var validate = function ( value ) {
 
-				while ( errorLines.length > 0 ) {
+				return editor.operation( function () {
 
-					editor.removeLineClass( errorLines.shift(), 'background', 'errorLine' );
+					while ( errorLines.length > 0 ) {
 
-				}
+						editor.removeLineClass( errorLines.shift(), 'background', 'errorLine' );
 
-				var string = '\n';
+					}
 
-				var lines = value.split( '\n' );
-				var lineCurrent = 0, lineTotal = lines.length;
+					for ( var i = 0; i < widgets.length; i ++ ) {
 
-				while ( lineCurrent < lineTotal && lines[ lineCurrent ].indexOf( '<script>' ) === -1 ) {
+						editor.removeLineWidget( widgets[ i ] );
 
-					string += '\n';
-					lineCurrent ++;
+					}
 
-				}
+					widgets.length = 0;
 
-				var lineStart = lineCurrent ++;
+					// remove html
 
-				while ( lineCurrent < lineTotal && lines[ lineCurrent ].indexOf( '<\/script>' ) === -1 ) {
+					var string = '\n';
+					var lines = value.split( '\n' );
+					var lineCurrent = 0, lineTotal = lines.length;
 
-					string += lines[ lineCurrent ] + '\n';
-					lineCurrent ++;
+					while ( lineCurrent < lineTotal && lines[ lineCurrent ].indexOf( '<script>' ) === -1 ) {
 
-				}
+						string += '\n';
+						lineCurrent ++;
 
-				var lineEnd = lineCurrent;
+					}
 
-				//
+					var lineStart = lineCurrent ++;
 
-				try {
+					while ( lineCurrent < lineTotal && lines[ lineCurrent ].indexOf( '<\/script>' ) === -1 ) {
 
-					var result = esprima.parse( string, { tolerant: true, loc: true } ).errors;
+						string += lines[ lineCurrent ] + '\n';
+						lineCurrent ++;
 
-					for ( var i = 0; i < result.length; i ++ ) {
+					}
 
-						var error = result[ i ];
+					//
+
+					try {
+
+						var result = esprima.parse( string, { tolerant: true } ).errors;
+
+						for ( var i = 0; i < result.length; i ++ ) {
+
+							var error = result[ i ];
+
+							var message = document.createElement( 'div' );
+							message.className = 'esprima-error';
+							message.textContent = error.message.replace(/Line [0-9]+: /, '');
+
+							var lineNumber = error.lineNumber - 1;
+							errorLines.push( lineNumber );
+
+							editor.addLineClass( lineNumber, 'background', 'errorLine' );
+
+							var widget = editor.addLineWidget(
+								lineNumber,
+								message
+							);
+
+							widgets.push( widget );
+
+						}
+
+					} catch ( error ) {
+
+						var message = document.createElement( 'div' );
+						message.className = 'esprima-error';
+						message.textContent = error.message.replace(/Line [0-9]+: /, '');
+
 						var lineNumber = error.lineNumber - 1;
-
 						errorLines.push( lineNumber );
 
 						editor.addLineClass( lineNumber, 'background', 'errorLine' );
 
-						console.log( error.toString() );
+						var widget = editor.addLineWidget(
+							lineNumber,
+							message
+						);
+
+						widgets.push( widget );
 
 					}
 
-				} catch ( error ) {
+					return errorLines.length === 0;
 
-					var lineNumber = error.lineNumber - 1;
-
-					errorLines.push( lineNumber );
-
-					editor.addLineClass( lineNumber, 'background', 'errorLine' );
-
-					console.log( error.toString() );
-
-				}
-
-				return errorLines.length === 0;
+				});
 
 			};
 
