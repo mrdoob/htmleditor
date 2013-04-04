@@ -191,7 +191,7 @@
 
 			//
 
-			var defaultCode = decode( 'dVRdT9swFH0uv8IrL2EqTmCqYE3LtEGBSaAhQEJ7dOObxpDYme1QCuK/79pJumbLokhx7tc55/ra0w9nP07vf97MSWaL/GRnWn8G0wwYx+9gWoBlJMmYNmBnw8qm+8dD7zB2nYNbDRaKr8mbWw0WLHlaalVJvp+oXOkJ2U39E3t3wfRSyAmJ6l/1DDrN1WpCMsE5SG99d8XDtvo0bJhMHUoNnGhRWmJ0Mhtm1paTMEy4fDQ0yVXF05xpoIkqQvbIXsJcLExoMw1AH02ox0fNTyEkGoYniOTLbVU+2XE0wpCslH5iXgxJlcYmaFUAWVRL5NvgKg50qdQyryHL0AeJqgiFMRWYkGP7RP5F8Nmn8efjaDc5OHTVRUoCshKSqxUVUoJ+ENxmZDabkYjskbc+HylRmbRbtrgTdglimdm/4mpjTN69qGeGMlgBmo2ISUDCiGAoBw06bv1LQJVWr0ekYBa0YDmuwGTxpoKQwsGklUysUJIESNg7B20x9EpYkfvL2/mcPsDi4uq28QR7cSeS4ljdiVfo6caoT12TzlVSFU6kmwrKyhLLnWYi58FGEOWqmOfgolyWT6u1d9jdgDYloJBnOPXegByNRz39D3vojMgBvlEUtbxqAFoqI1xr6CtijaOogfct76DfOUvQ0mtb3wn5nijDMuBayYvGH5DDKELgFrXdqE7eNe7ZN2ZEct14Axyr5lBGL5F/nE4NqUbWE2J1BVuGK4G1nPIJOSTvmxa6UfgHJ+iZmpacF00Zx63xuU2hPwPJpHA5/5uoX3iM7Fcfg65zRy3Y5GyzolpZH0NfsNYZuqlUKyz1kUQUxY7jntB1X+hB3B1nWi+C9sw0Y9RR4g5FM9wNuWZbt26YaVhfYnipuWv2Nw==' );
+			var defaultCode = decode( 'dVRdT9swFH0uv+KuewlTcAJSxdQGpK1042FoCJCmPbr2bWOW2J3t9APEf5/tOFUjuihKHJ97zz33wyk+3PycPv2+n0Fp6+r6pGhfg6JEyt17UNRoKbCSaoP2atjYxdnnYQCM3VXoV4O54jt49avBnLI/S60ayc+YqpQew8dFuCYBrqleCjmGvP1Ua9SLSm3GUArOUYbdN0+edexFFpUUPkobmGmxsmA0uxqW1q7GWca4fDaEVarhi4pqJEzVGX2m26wSc5PZUiOSZ5Pp0WX8qIV0G8NrFynQHTBfn3gZa6qB0Ro1TcEwlJiCRslRo550+BKVK4/epVBTi1rQyq3QlJM9g5DCwhUsGsmsUBKSU1eokHtH5lCJG3i6fZjNyJTKNTUPEUpOJz1T4lrwKF4wgY2QXG2IkBL1L8Ftmfa2blEsSwvRnSvW1Cgt8RUkdLVydNNSVDzZZ0S4qmcVeivvFdza5Hvy7lGbFbpM1jgNaAKXo/S9GsiOyEnh3N15nne62gBkpYzwtSEvLtYoz2P4UPNe9Ee/k3Tyutr369fM8XsEErjI83T/6KJ2ner53bmmfaVGsLuIJvAKcYDzbR4un6fGhXaqx2B1gwcbP4Tj8pmP4QLe9iX0s/AuTnJkbDpxIWlCuWtN8I1Eb/t5olJ4n/+N1N8Gjf0SbBz0zUtL9j6HqohWNtiQreO6cTCRauOoPkFOXLKjyRHT3THT80l/nkm7SLpDE8eol4k/FXG4o7jY1oPTWGTtgXc/AP9L+gc=' );
 
 			var documents = [ { filename: 'Untitled', filetype: 'text/plain', autoupdate: true, code: defaultCode } ];
 
@@ -534,6 +534,11 @@
 					preview.appendChild( iframe );
 
 					var content = iframe.contentDocument || iframe.contentWindow.document;
+
+					// workaround for chrome bug
+					// http://code.google.com/p/chromium/issues/detail?id=35980#c12
+
+					value = value.replace( '<script>', '<script>if ( window.innerWidth === 0 ) { window.innerWidth = parent.innerWidth; window.innerHeight = parent.innerHeight; }' );
 
 					content.open();
 					content.write( value );
