@@ -669,7 +669,7 @@
 				if ( element.style.display === '' ) {
 
 					buttonHide.textContent = 'show code';
-
+					document.getElementById('editor').style.display = 'none'
 					element.style.display = 'none';
 					buttonUpdate.style.display = 'none';
 					buttonShare.display = 'none';
@@ -677,7 +677,7 @@
 				} else {
 
 					buttonHide.textContent = 'hide code';
-
+					document.getElementById('editor').style.display = 'block'
 					element.style.display = '';
 					buttonUpdate.style.display = '';
 					buttonShare.display = '';
