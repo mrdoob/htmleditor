@@ -177,17 +177,17 @@
 
 			// deflate
 
-			var decode = function ( string ) {
+			function decode( string ) {
 
 				return RawDeflate.inflate( window.atob( string ) );
 
-			};
+			}
 
-			var encode = function ( string ) {
+			function encode( string ) {
 
 				return window.btoa( RawDeflate.deflate( string ) );
 
-			};
+			}
 
 			//
 
@@ -226,7 +226,8 @@
 
 			var interval;
 
-			var editor = CodeMirror( document.getElementById( 'editor' ), {
+			var editor = document.getElementById( 'editor' );
+			var codemirror = CodeMirror( editor, {
 
 				value: documents[ 0 ].code,
 				mode: 'text/html',
@@ -238,7 +239,7 @@
 
 			} );
 
-			editor.on( 'change', function() {
+			codemirror.on( 'change', function() {
 
 				buttonSave.style.display = '';
 				buttonDownload.style.display = 'none';
@@ -249,8 +250,6 @@
 				interval = setTimeout( update, 500 );
 
 			} );
-
-			var element = editor.getWrapperElement();
 
 			// toolbar
 
@@ -333,7 +332,7 @@
 			buttonShare.addEventListener( 'click', function ( event ) {
 
 				var dom = document.createElement( 'input' );
-				dom.value = 'http://www.mrdoob.com/projects/htmleditor/#B/' + encode( editor.getValue() );
+				dom.value = 'http://mrdoob.com/projects/htmleditor/#B/' + encode( codemirror.getValue() );
 				dom.style.width = '400px';
 				dom.style.padding = '5px';
 				dom.style.marginTop = '20px';
@@ -355,7 +354,7 @@
 
 				if ( confirm( 'Are you sure?' ) === true ) {
 
-					editor.setValue( defaultCode );
+					codemirror.setValue( defaultCode );
 					save();
 
 				}
@@ -419,12 +418,12 @@
 				var content = document.createElement( 'div' );
 				element.appendChild( content );
 
-				var update = function () {
+				function update() {
 
 					element.style.left = ( ( window.innerWidth - element.offsetWidth ) / 2 ) + 'px';
 					element.style.top = ( ( window.innerHeight - element.offsetHeight ) / 2 ) + 'px';
 
-				};
+				}
 
 				window.addEventListener( 'load', update, false );
 				window.addEventListener( 'resize', update, false );
@@ -477,7 +476,7 @@
 
 				reader.onload = function ( event ) {
 
-					editor.setValue( event.target.result );
+					codemirror.setValue( event.target.result );
 
 				};
 
@@ -511,9 +510,9 @@
 
 			// actions
 
-			var update = function () {
+			function update() {
 
-				var value = editor.getValue();
+				var value = codemirror.getValue();
 
 				if ( validate( value ) ) {
 
@@ -546,24 +545,24 @@
 
 				}
 
-			};
+			}
 
 			var errorLines = [];
 			var widgets = [];
 
-			var validate = function ( value ) {
+			function validate( value ) {
 
-				return editor.operation( function () {
+				return codemirror.operation( function () {
 
 					while ( errorLines.length > 0 ) {
 
-						editor.removeLineClass( errorLines.shift(), 'background', 'errorLine' );
+						codemirror.removeLineClass( errorLines.shift(), 'background', 'errorLine' );
 
 					}
 
 					for ( var i = 0; i < widgets.length; i ++ ) {
 
-						editor.removeLineWidget( widgets[ i ] );
+						codemirror.removeLineWidget( widgets[ i ] );
 
 					}
 
@@ -608,9 +607,9 @@
 							var lineNumber = error.lineNumber - 1;
 							errorLines.push( lineNumber );
 
-							editor.addLineClass( lineNumber, 'background', 'errorLine' );
+							codemirror.addLineClass( lineNumber, 'background', 'errorLine' );
 
-							var widget = editor.addLineWidget(
+							var widget = codemirror.addLineWidget(
 								lineNumber,
 								message
 							);
@@ -628,9 +627,9 @@
 						var lineNumber = error.lineNumber - 1;
 						errorLines.push( lineNumber );
 
-						editor.addLineClass( lineNumber, 'background', 'errorLine' );
+						codemirror.addLineClass( lineNumber, 'background', 'errorLine' );
 
-						var widget = editor.addLineWidget(
+						var widget = codemirror.addLineWidget(
 							lineNumber,
 							message
 						);
@@ -643,15 +642,15 @@
 
 				});
 
-			};
+			}
 
-			var save = function () {
+			function save() {
 
-				documents[ 0 ].code = editor.getValue();
+				documents[ 0 ].code = codemirror.getValue();
 
 				localStorage.codeeditor = JSON.stringify( documents );
 
-				var blob = new Blob( [ editor.getValue() ], { type: documents[ 0 ].filetype } );
+				var blob = new Blob( [ codemirror.getValue() ], { type: documents[ 0 ].filetype } );
 				var objectURL = URL.createObjectURL( blob );
 
 				buttonDownload.href = objectURL;
@@ -662,29 +661,29 @@
 				buttonSave.style.display = 'none';
 				buttonDownload.style.display = '';
 
-			};
+			}
 
-			var toggle = function () {
+			function toggle() {
 
-				if ( element.style.display === '' ) {
+				if ( editor.style.display === '' ) {
 
 					buttonHide.textContent = 'show code';
-					document.getElementById('editor').style.display = 'none'
-					element.style.display = 'none';
+
+					editor.style.display = 'none';
 					buttonUpdate.style.display = 'none';
 					buttonShare.display = 'none';
 
 				} else {
 
 					buttonHide.textContent = 'hide code';
-					document.getElementById('editor').style.display = 'block'
-					element.style.display = '';
+
+					editor.style.display = '';
 					buttonUpdate.style.display = '';
 					buttonShare.display = '';
 
 				}
 
-			};
+			}
 
 			update();
 
