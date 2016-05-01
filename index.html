@@ -12,14 +12,6 @@
 		<script src="js/rawdeflate.js"></script>
 		<script src="js/esprima.js"></script>
 		<style>
-			@font-face {
-
-				font-family: 'inconsolata';
-				src: url('files/inconsolata.woff') format('woff');
-				font-weight: normal;
-				font-style: normal;
-
-			}
 
 			html, body {
 
@@ -106,11 +98,8 @@
 			#editor .CodeMirror {
 
 				height: 100%;
-				font-family: inconsolata;
-				font-size: 16px;
+				font-size: 14px;
 				background-color: rgba(255,255,255,0.85);
-
-				-webkit-transform: translateZ(0); /* Workaround for OSX antialias issue */
 
 			}
 
@@ -152,6 +141,7 @@
 				top: 15px;
 				right: 30px;
 				text-align: right;
+				z-index: 10; /* CodeMirror sets z-index */
 
 			}
 
@@ -161,6 +151,7 @@
 				color: rgb(235,235,235);
 				padding: 20px 20px 20px 20px;
 				background-color: rgb(80,80,80);
+				z-index: 20; /* CodeMirror sets z-index */
 
 			}
 
@@ -191,7 +182,7 @@
 
 			//
 
-			var defaultCode = decode( 'dVRdT9swFH0uv+KuewlTcAJSxdQGpK1042FoCJCmPbr2bWOW2J3t9APEf5/tOFUjuihKHJ97zz33wyk+3PycPv2+n0Fp6+r6pGhfg6JEyt17UNRoKbCSaoP2atjYxdnnYQCM3VXoV4O54jt49avBnLI/S60ayc+YqpQew8dFuCYBrqleCjmGvP1Ua9SLSm3GUArOUYbdN0+edexFFpUUPkobmGmxsmA0uxqW1q7GWca4fDaEVarhi4pqJEzVGX2m26wSc5PZUiOSZ5Pp0WX8qIV0G8NrFynQHTBfn3gZa6qB0Ro1TcEwlJiCRslRo550+BKVK4/epVBTi1rQyq3QlJM9g5DCwhUsGsmsUBKSU1eokHtH5lCJG3i6fZjNyJTKNTUPEUpOJz1T4lrwKF4wgY2QXG2IkBL1L8Ftmfa2blEsSwvRnSvW1Cgt8RUkdLVydNNSVDzZZ0S4qmcVeivvFdza5Hvy7lGbFbpM1jgNaAKXo/S9GsiOyEnh3N15nne62gBkpYzwtSEvLtYoz2P4UPNe9Ee/k3Tyutr369fM8XsEErjI83T/6KJ2ner53bmmfaVGsLuIJvAKcYDzbR4un6fGhXaqx2B1gwcbP4Tj8pmP4QLe9iX0s/AuTnJkbDpxIWlCuWtN8I1Eb/t5olJ4n/+N1N8Gjf0SbBz0zUtL9j6HqohWNtiQreO6cTCRauOoPkFOXLKjyRHT3THT80l/nkm7SLpDE8eol4k/FXG4o7jY1oPTWGTtgXc/AP9L+gc=' );
+			var defaultCode = decode( 'bVRbb9owFH6mv+KMvaRT6tBNqFMISBtl7cOqVW2laY/GPhCzxGa2w6UV/322kyCiEiHFOZfv+87FZB9uf01f/jzOILdlMbnI6lcvy5Fy9+5lJVoKLKfaoB33K7u4+toPDmP3BfpTb674Ht78qTen7O9Sq0ryK6YKpVP4uAjPKLhLqpdCpjCoP9UG9aJQ2xRywTnKYD148KRFz5JGSeZZamKmxdqC0Wzcz61dp0nCuFwZwgpV8UVBNRKmyoSu6C4pxNwkNteIZGUSPbxpPkohnaE/cUwB7gR5cuFlbKgGRkvUNAbDUGIMGiVHjXrU+peoXHv0PoaSWtSCFu6EJh8FhEUlmRVKgpDCRpeuQ6HoFgXGIHELL/dPsxmZUrmh5qlxRZejTihxvX8WrxjBVkiutkRIifq34DaPO6Z7FMvcQpPOFatKlJb41hG6Xju4aS4KHh1LIVyVswJ9lM8KaXXVHXmPqM0aXTUbnAZvBDfD+L0aSM7IiWFArmO4HrS6agKyVkb4/pBXx/WlIQ+t7nA/e0vUimtb3u1eNce7xhGB53K/lq0dTSfjwU3pOzWCPTTeCN6g2djBbhAeX5/GhXZqU7C6whPDT+GwfMUpfIbDsXV++O94ojN70ooL5RLK3UhCbgN06C4QlcInnu7QvwqN/RbsLuKH1xS1cR05RCsbYsjOKbt1biLV1kF9cmNxVQ5HZ0L350KvR90FJvUhaq9HszedEurVDxTHIoL/5N5lSX213VX3fz7/AQ==' );
 
 			var documents = [ { filename: 'Untitled', filetype: 'text/plain', autoupdate: true, code: defaultCode } ];
 
